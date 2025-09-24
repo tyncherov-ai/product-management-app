@@ -1,4 +1,3 @@
-// src/pages/LoginPage.tsx
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import AuthLayout from "../components/layout/AuthLayout";

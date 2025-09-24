@@ -1,4 +1,3 @@
-// src/hooks/redux.ts
 import {
   type TypedUseSelectorHook,
   useDispatch,

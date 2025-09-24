@@ -20,7 +20,6 @@ export const authAPI = {
   ): Promise<{ user: User; token: string }> => {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
-        // Имитация задержки сети
         const users = getUsersFromDB();
         if (users.find((user) => user.email === email)) {
           return reject(new Error("Пользователь с таким email уже существует"));
