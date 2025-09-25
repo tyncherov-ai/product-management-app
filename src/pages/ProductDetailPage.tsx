@@ -7,8 +7,9 @@ import ProductFormModal from "../components/dashboard/ProductFormModal";
 import { LoadingSpinner } from "../components/ui/LoadingSpinner";
 import { ErrorMessage } from "../components/ui/ErrorMessage";
 import { Breadcrumbs } from "../components/ui/BreadCrumbs";
-import { ProductSummaryCard } from "../components/products/ProductSummaryCard";
-import { ProductSpecificationsCard } from "../components/products/ProductSpecificationsCard";
+import { ProductSummaryCard } from "../components/product-detail/ProductSummaryCard";
+import { ProductSpecificationsCard } from "../components/product-detail/ProductSpecificationsCard";
+import ConfirmModal from "../components/ui/ConfirmModal";
 
 const ProductDetailPage = () => {
   const { productId } = useParams<{ productId: string }>();
@@ -22,22 +23,23 @@ const ProductDetailPage = () => {
   } = useAppSelector((state) => state.products);
   const [isEditModalOpen, setEditModalOpen] = useState(false);
 
+  const [isConfirmModalOpen, setConfirmModalOpen] = useState(false);
+
+  const handleDelete = () => {
+    if (productId) {
+      dispatch(deleteProduct(productId))
+        .unwrap()
+        .then(() => {
+          navigate("/dashboard");
+        });
+    }
+  };
+
   useEffect(() => {
     if (productId) {
       dispatch(fetchProductById(productId));
     }
   }, [productId, dispatch]);
-
-  const handleDelete = () => {
-    if (
-      productId &&
-      window.confirm("Are you sure you want to delete this product?")
-    ) {
-      dispatch(deleteProduct(productId)).then(() => {
-        navigate("/dashboard");
-      });
-    }
-  };
 
   if (loadingItem) {
     return (
@@ -95,7 +97,7 @@ const ProductDetailPage = () => {
               Edit Product
             </button>
             <button
-              onClick={handleDelete}
+              onClick={() => setConfirmModalOpen(true)}
               className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700"
             >
               Delete Product
@@ -111,6 +113,13 @@ const ProductDetailPage = () => {
         open={isEditModalOpen}
         onClose={() => setEditModalOpen(false)}
         productToEdit={product}
+      />
+      <ConfirmModal
+        open={isConfirmModalOpen}
+        onClose={() => setConfirmModalOpen(false)}
+        onConfirm={handleDelete}
+        title="Confirm Deletion"
+        message={`Are you sure you want to delete "${product?.name}"? This action cannot be undone.`}
       />
     </>
   );

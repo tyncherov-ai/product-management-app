@@ -5,6 +5,7 @@ import type {
   UpdateProductRequest,
 } from "../../types";
 import { api } from "../../api/axiosInstance";
+import type { AxiosError } from "axios";
 
 interface ProductsState {
   items: Product[];
@@ -24,41 +25,79 @@ const initialState: ProductsState = {
 
 const fetchProducts = createAsyncThunk<Product[]>(
   "products/fetchAll",
-  async () => {
-    const { data } = await api.get<Product[]>("");
-    return data;
+  async (_, { rejectWithValue }) => {
+    try {
+      const { data } = await api.get<Product[]>("");
+      return data;
+    } catch (err) {
+      const error = err as AxiosError<{ error: string }>;
+      return rejectWithValue(
+        error.response?.data.error ?? "Failed to load products"
+      );
+    }
   }
 );
 
-const fetchProductById = createAsyncThunk<Product, string>(
-  "products/fetchById",
-  async (id: string) => {
+const fetchProductById = createAsyncThunk<
+  Product,
+  string,
+  { rejectValue: string }
+>("products/fetchById", async (id, { rejectWithValue }) => {
+  try {
     const { data } = await api.get<Product>(`/${id}`);
     return data;
+  } catch (err) {
+    const error = err as AxiosError<{ error: string }>;
+    return rejectWithValue(
+      error.response?.data.error ?? "Failed to load product"
+    );
   }
-);
+});
 
-const createProduct = createAsyncThunk<Product, CreateProductRequest>(
-  "products/create",
-  async (body) => {
+const createProduct = createAsyncThunk<
+  Product,
+  CreateProductRequest,
+  { rejectValue: string }
+>("products/create", async (body, { rejectWithValue }) => {
+  try {
     const { data } = await api.post<Product>("", body);
     return data;
+  } catch (err) {
+    const error = err as AxiosError<{ error: string }>;
+    return rejectWithValue(
+      error.response?.data.error ?? "Failed to create product"
+    );
   }
-);
+});
 
-const updateProduct = createAsyncThunk<Product, UpdateProductRequest>(
-  "products/update",
-  async ({ id, ...body }) => {
+const updateProduct = createAsyncThunk<
+  Product,
+  UpdateProductRequest,
+  { rejectValue: string }
+>("products/update", async ({ id, ...body }, { rejectWithValue }) => {
+  try {
     const { data } = await api.put<Product>(`/${id}`, body);
     return data;
+  } catch (err) {
+    const error = err as AxiosError<{ error: string }>;
+    return rejectWithValue(
+      error.response?.data.error ?? "Failed to update product"
+    );
   }
-);
+});
 
-const deleteProduct = createAsyncThunk<string, string>(
+const deleteProduct = createAsyncThunk<string, string, { rejectValue: string }>(
   "products/delete",
-  async (id: string) => {
-    await api.delete(`/${id}`);
-    return id;
+  async (id, { rejectWithValue }) => {
+    try {
+      await api.delete(`/${id}`);
+      return id;
+    } catch (err) {
+      const error = err as AxiosError<{ error: string }>;
+      return rejectWithValue(
+        error.response?.data.error ?? "An unknown server error occurred"
+      );
+    }
   }
 );
 
@@ -92,7 +131,7 @@ const productsSlice = createSlice({
       })
       .addCase(fetchProductById.rejected, (state, action) => {
         state.loadingItem = false;
-        state.error = action.error.message ?? "Failed to load product";
+        state.error = action.payload ?? "Failed to load product";
       })
       // create
       .addCase(createProduct.pending, (state) => {
@@ -102,7 +141,7 @@ const productsSlice = createSlice({
         state.items.unshift(action.payload);
       })
       .addCase(createProduct.rejected, (state, action) => {
-        state.error = action.error.message ?? "Failed to create product";
+        state.error = action.payload ?? "Failed to create product";
       })
       // update
       .addCase(updateProduct.pending, (state) => {
@@ -114,7 +153,8 @@ const productsSlice = createSlice({
         if (state.item?.id === action.payload.id) state.item = action.payload;
       })
       .addCase(updateProduct.rejected, (state, action) => {
-        state.error = action.error.message ?? "Failed to update product";
+        console.log(action.error);
+        state.error = action.payload ?? "Failed to update product";
       })
       // delete
       .addCase(deleteProduct.fulfilled, (state, action) => {
@@ -122,7 +162,7 @@ const productsSlice = createSlice({
         if (state.item?.id === action.payload) state.item = null;
       })
       .addCase(deleteProduct.rejected, (state, action) => {
-        state.error = action.error.message ?? "Failed to delete product";
+        state.error = action.payload ?? "Failed to delete product";
       });
   },
 });
