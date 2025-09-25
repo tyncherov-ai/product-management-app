@@ -16,7 +16,7 @@ export const authAPI = {
   register: (
     name: string,
     email: string,
-    password: string
+    _password: string
   ): Promise<{ user: User; token: string }> => {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
@@ -36,7 +36,7 @@ export const authAPI = {
 
   login: (
     email: string,
-    password: string
+    _password: string
   ): Promise<{ user: User; token: string }> => {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
