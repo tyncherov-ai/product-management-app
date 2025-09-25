@@ -5,6 +5,7 @@ import { deleteProduct } from "../../store/slices/productsSlice";
 import { DeleteIcon, EditIcon, ViewIcon } from "../icons/Icons";
 import { formatDate, formatPrice } from "../../utils/formatters";
 import Pagination from "./Pagination";
+import { Link } from "react-router-dom";
 
 interface ProductsTableProps {
   products: Product[];
@@ -124,9 +125,12 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="flex items-center gap-2">
-                    <button className="p-2 rounded-full text-blue-600 bg-blue-100 hover:bg-blue-200">
+                    <Link
+                      to={`/products/${product.id}`}
+                      className="p-2 rounded-full text-blue-600 bg-blue-100 hover:bg-blue-200"
+                    >
                       <ViewIcon />
-                    </button>
+                    </Link>
                     <button
                       onClick={() => onEdit(product)}
                       className="p-2 rounded-full text-yellow-600 bg-yellow-100 hover:bg-yellow-200"
