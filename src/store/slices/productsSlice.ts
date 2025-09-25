@@ -4,7 +4,7 @@ import type {
   Product,
   UpdateProductRequest,
 } from "../../types";
-import axios from "axios";
+import { api } from "../../api/axiosInstance";
 
 interface ProductsState {
   items: Product[];
@@ -21,13 +21,6 @@ const initialState: ProductsState = {
   loadingItem: false,
   error: null,
 };
-
-const BASE_URL = "https://api.restful-api.dev/objects";
-
-const api = axios.create({
-  baseURL: BASE_URL,
-  headers: { "Content-Type": "application/json" },
-});
 
 const fetchProducts = createAsyncThunk<Product[]>(
   "products/fetchAll",

@@ -3,6 +3,7 @@ import { type Product } from "../../types";
 import { useAppDispatch } from "../../hooks/redux";
 import { deleteProduct } from "../../store/slices/productsSlice";
 import { DeleteIcon, EditIcon, ViewIcon } from "../icons/Icons";
+import { formatDate, formatPrice } from "../../utils/formatters";
 import Pagination from "./Pagination";
 
 interface ProductsTableProps {
@@ -59,25 +60,6 @@ const ProductsTable: React.FC<ProductsTableProps> = ({
       dispatch(deleteProduct(id));
     }
   };
-
-  const formatDate = (dateString: string) => {
-    if (!dateString) return "N/A";
-    else {
-      return new Intl.DateTimeFormat("en-US", {
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-      }).format(new Date(dateString));
-    }
-  };
-
-  const formatPrice = (price?: number) =>
-    typeof price === "number"
-      ? new Intl.NumberFormat("en-US", {
-          style: "currency",
-          currency: "USD",
-        }).format(price)
-      : "N/A";
 
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden">
