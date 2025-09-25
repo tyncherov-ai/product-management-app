@@ -1,4 +1,3 @@
-// src/components/dashboard/ProductFormModal.tsx
 import React, { useEffect } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import {

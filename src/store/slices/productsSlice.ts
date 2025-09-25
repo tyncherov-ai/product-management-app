@@ -138,7 +138,12 @@ const productsSlice = createSlice({
         state.error = null;
       })
       .addCase(createProduct.fulfilled, (state, action) => {
-        state.items.unshift(action.payload);
+        // Ответ сервера не содержит createdAt, поэтому мы добавим его вручную
+        const newProductWithDate = {
+          ...action.payload,
+          createdAt: new Date().toISOString(),
+        };
+        state.items.unshift(newProductWithDate);
       })
       .addCase(createProduct.rejected, (state, action) => {
         state.error = action.payload ?? "Failed to create product";
