@@ -17,6 +17,7 @@ import type {
   Product,
   UpdateProductRequest,
 } from "../../types";
+import { STATUS } from "../../utils/consts";
 
 interface ProductFormData {
   name: string;
@@ -73,10 +74,7 @@ const ProductFormModal: React.FC<ProductFormModalProps> = ({
       price: Number(formData.price),
       category: formData.category,
       stock: Number(formData.stock),
-      status:
-        Number(formData.stock) > 0
-          ? "Active"
-          : ("Out of Stock" as "Active" | "Out of Stock"),
+      status: Number(formData.stock) > 0 ? STATUS.ACTIVE : STATUS.OUT_OF_STOCK,
     };
 
     try {

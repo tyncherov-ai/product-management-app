@@ -1,7 +1,6 @@
 import { useMemo, useState, useEffect } from "react";
 import type { Product } from "../types";
-
-const ITEMS_PER_PAGE = 5;
+import { ITEMS_PER_PAGE } from "../utils/consts";
 
 export const useProductFilters = (products: Product[]) => {
   const [searchQuery, setSearchQuery] = useState("");

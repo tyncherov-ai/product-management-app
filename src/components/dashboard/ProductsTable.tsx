@@ -6,6 +6,7 @@ import { DeleteIcon, EditIcon, ViewIcon } from "../icons/Icons";
 import { formatDate, formatPrice } from "../../utils/formatters";
 import Pagination from "./Pagination";
 import { Link } from "react-router-dom";
+import { CategoryBadge, StatusBadge } from "../ui/Badges";
 
 interface ProductsTableProps {
   products: Product[];
@@ -15,36 +16,6 @@ interface ProductsTableProps {
   itemsPerPage: number;
   onPageChange: (page: number) => void;
 }
-
-const StatusBadge: React.FC<{ stock: number | undefined }> = ({ stock }) => {
-  if (typeof stock !== "number") {
-    return (
-      <span className="px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">
-        Unknown
-      </span>
-    );
-  }
-  const isAvailable = stock > 0;
-  const statusText = isAvailable ? "Active" : "Out of Stock";
-  const bgColor = isAvailable ? "bg-green-100" : "bg-red-100";
-  const textColor = isAvailable ? "text-green-800" : "text-red-800";
-  return (
-    <span
-      className={`px-2 py-1 text-xs font-semibold rounded-full ${bgColor} ${textColor}`}
-    >
-      {statusText}
-    </span>
-  );
-};
-
-const CategoryBadge: React.FC<{ category?: string }> = ({ category }) => {
-  if (!category) return null;
-  return (
-    <span className="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
-      {category}
-    </span>
-  );
-};
 
 const ProductsTable: React.FC<ProductsTableProps> = ({
   products,
