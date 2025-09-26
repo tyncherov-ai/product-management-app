@@ -7,12 +7,10 @@ export const useProductFilters = (products: Product[]) => {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [currentPage, setCurrentPage] = useState(1);
 
-  // Сбрасываем страницу на первую при изменении фильтров
   useEffect(() => {
     setCurrentPage(1);
   }, [searchQuery, selectedCategory]);
 
-  // Вычисляем уникальные категории
   const categories = useMemo(() => {
     const unique = new Set(
       products
@@ -22,7 +20,6 @@ export const useProductFilters = (products: Product[]) => {
     return ["All", ...Array.from(unique)];
   }, [products]);
 
-  // Фильтруем продукты
   const filteredProducts = useMemo(() => {
     let filtered = [...products];
     if (searchQuery) {
@@ -38,7 +35,6 @@ export const useProductFilters = (products: Product[]) => {
     return filtered;
   }, [products, searchQuery, selectedCategory]);
 
-  // "Нарезаем" на страницы
   const paginatedProducts = useMemo(() => {
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
     const endIndex = startIndex + ITEMS_PER_PAGE;
@@ -46,15 +42,12 @@ export const useProductFilters = (products: Product[]) => {
   }, [filteredProducts, currentPage]);
 
   return {
-    // Состояния
     searchQuery,
     selectedCategory,
     currentPage,
-    // Обработчики
     setSearchQuery,
     setSelectedCategory,
     setCurrentPage,
-    // Производные данные
     categories,
     paginatedProducts,
     totalFilteredItems: filteredProducts.length,

@@ -23,83 +23,75 @@ const initialState: ProductsState = {
   error: null,
 };
 
-const fetchProducts = createAsyncThunk<Product[]>(
-  "products/fetchAll",
-  async (_, { rejectWithValue }) => {
-    try {
-      const { data } = await api.get<Product[]>("");
-      return data;
-    } catch (err) {
-      const error = err as AxiosError<{ error: string }>;
-      return rejectWithValue(
-        error.response?.data.error ?? "Failed to load products"
-      );
-    }
+const fetchProducts = createAsyncThunk<
+  Product[],
+  void,
+  { rejectValue: string | undefined }
+>("products/fetchAll", async (_, { rejectWithValue }) => {
+  try {
+    const { data } = await api.get<Product[]>("");
+    return data;
+  } catch (err) {
+    const error = err as AxiosError<{ error: string }>;
+    return rejectWithValue(error.response?.data.error);
   }
-);
+});
 
 const fetchProductById = createAsyncThunk<
   Product,
   string,
-  { rejectValue: string }
+  { rejectValue: string | undefined }
 >("products/fetchById", async (id, { rejectWithValue }) => {
   try {
     const { data } = await api.get<Product>(`/${id}`);
     return data;
   } catch (err) {
     const error = err as AxiosError<{ error: string }>;
-    return rejectWithValue(
-      error.response?.data.error ?? "Failed to load product"
-    );
+    return rejectWithValue(error.response?.data.error);
   }
 });
 
 const createProduct = createAsyncThunk<
   Product,
   CreateProductRequest,
-  { rejectValue: string }
+  { rejectValue: string | undefined }
 >("products/create", async (body, { rejectWithValue }) => {
   try {
     const { data } = await api.post<Product>("", body);
     return data;
   } catch (err) {
     const error = err as AxiosError<{ error: string }>;
-    return rejectWithValue(
-      error.response?.data.error ?? "Failed to create product"
-    );
+    return rejectWithValue(error.response?.data.error);
   }
 });
 
 const updateProduct = createAsyncThunk<
   Product,
   UpdateProductRequest,
-  { rejectValue: string }
+  { rejectValue: string | undefined }
 >("products/update", async ({ id, ...body }, { rejectWithValue }) => {
   try {
     const { data } = await api.put<Product>(`/${id}`, body);
     return data;
   } catch (err) {
     const error = err as AxiosError<{ error: string }>;
-    return rejectWithValue(
-      error.response?.data.error ?? "Failed to update product"
-    );
+    return rejectWithValue(error.response?.data.error);
   }
 });
 
-const deleteProduct = createAsyncThunk<string, string, { rejectValue: string }>(
-  "products/delete",
-  async (id, { rejectWithValue }) => {
-    try {
-      await api.delete(`/${id}`);
-      return id;
-    } catch (err) {
-      const error = err as AxiosError<{ error: string }>;
-      return rejectWithValue(
-        error.response?.data.error ?? "An unknown server error occurred"
-      );
-    }
+const deleteProduct = createAsyncThunk<
+  string,
+  string,
+  { rejectValue: string | undefined }
+>("products/delete", async (id, { rejectWithValue }) => {
+  try {
+    await api.delete(`/${id}`);
+    return id;
+  } catch (err) {
+    const error = err as AxiosError<{ error: string }>;
+    return rejectWithValue(error.response?.data.error);
   }
-);
+});
 
 const productsSlice = createSlice({
   name: "products",
